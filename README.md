@@ -13,7 +13,7 @@ spending patterns and calculate a true, income-adjusted savings rate.
 - Any transactions that distort the "true" spending picture?
 - Actual savings rate (% of income saved) per month?
 - Most frequent recurring merchants?
-- Dashboard Interaction — *(add link once uploaded)*
+- Dashboard Interaction — [View Dashboard](https://github.com/thanush912/Personal-Bank-Statement-Analysis/blob/main/Dashboard.png)
 
 ## Process
 - Cleaned raw data: fixed date formats, removed footer rows, verified no
@@ -30,7 +30,8 @@ spending patterns and calculate a true, income-adjusted savings rate.
   pie chart, merged onto one Report sheet.
 
 ## Dashboard
-*(Add a screenshot here, e.g.* `![Dashboard](Dashboard_Image.png)` *)*
+<img width="1301" height="415" alt="Dashboard" src="https://github.com/user-attachments/assets/dc66c675-d51e-4be9-9f17-55aa8f5ca61a" />
+
 
 ## Project Insight
 - June's raw expenses looked alarming (-₹25,435) but were mostly a ₹36,736
