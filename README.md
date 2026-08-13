@@ -5,8 +5,7 @@ Analyze 3 months (May–July 2026) of personal bank transactions to understand
 spending patterns and calculate a true, income-adjusted savings rate.
 
 ## Dataset Used
-- [Personal bank e-statement (356 transactions, May–July 2026). Account
-  number, name, and address removed before analysis.](https://github.com/thanush912/Personal-Bank-Statement-Analysis/blob/main/Acct%20Statement.xlsx)
+- [Personal bank e-statement ](https://github.com/thanush912/Personal-Bank-Statement-Analysis/blob/main/Acct%20Statement.xlsx)
 
 ## Questions (KPIs)
 - Income, expense, and net savings per month?
