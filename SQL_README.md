@@ -1,7 +1,7 @@
 # SQL Analysis — Personal Bank Statement (MySQL)
 
 This folder contains the SQL side of the [Personal Bank Statement Analysis
-project](../README.md) — the same dataset already analyzed in Excel, rebuilt
+project]([../README.md](https://github.com/thanush912/Personal-Bank-Statement-Analysis)) — the same dataset already analyzed in Excel, rebuilt
 and cross-validated in MySQL to demonstrate query-based analysis, window
 functions, and CTEs.
 
