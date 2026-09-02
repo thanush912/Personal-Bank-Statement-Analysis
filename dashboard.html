@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Personal Finance Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="bg-gray-50 text-gray-800 font-sans p-6">
+
+  <div class="max-w-7xl mx-auto space-y-6">
+    
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+      <div>
+        <h1 class="text-2xl font-bold text-gray-900">Personal Financial Dashboard</h1>
+        <p class="text-sm text-gray-500">Analysis of Income, Savings, and Category-Wise Expenses</p>
+      </div>
+      
+      <div class="flex flex-wrap gap-4">
+        <div>
+          <label for="monthFilter" class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Month</label>
+          <select id="monthFilter" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5">
+            <option value="All">All Months</option>
+            <option value="2026-05">May 2026</option>
+            <option value="2026-06">June 2026</option>
+            <option value="2026-07">July 2026</option>
+          </select>
+        </div>
+
+        <div>
+          <label for="categoryFilter" class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Category</label>
+          <select id="categoryFilter" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5">
+            <option value="All">All Categories</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-100">
+        <p class="text-xs font-bold text-gray-400 uppercase tracking-wider">Total Income</p>
+        <p id="kpiIncome" class="text-2xl font-extrabold text-green-600 mt-1">₹0</p>
+      </div>
+
+      <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-100">
+        <p class="text-xs font-bold text-gray-400 uppercase tracking-wider">Total Spending</p>
+        <p id="kpiSpending" class="text-2xl font-extrabold text-red-500 mt-1">₹0</p>
+      </div>
+
+      <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-100">
+        <p class="text-xs font-bold text-gray-400 uppercase tracking-wider">Net Savings</p>
+        <p id="kpiSavings" class="text-2xl font-extrabold text-blue-600 mt-1">₹0</p>
+      </div>
+
+      <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-100">
+        <p class="text-xs font-bold text-gray-400 uppercase tracking-wider">Net Savings Rate</p>
+        <p id="kpiSavingsRate" class="text-2xl font-extrabold text-purple-600 mt-1">0%</p>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-100">
+        <p class="text-xs font-bold text-gray-400 uppercase tracking-wider">Top Expense Category</p>
+        <p id="kpiTopCategory" class="text-lg font-bold text-gray-800 mt-1">-</p>
+      </div>
+
+      <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-100">
+        <p class="text-xs font-bold text-gray-400 uppercase tracking-wider">Avg. Daily Spend</p>
+        <p id="kpiAvgDaily" class="text-lg font-bold text-gray-800 mt-1">₹0</p>
+      </div>
+
+      <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-100">
+        <p class="text-xs font-bold text-gray-400 uppercase tracking-wider">Transaction Count</p>
+        <p id="kpiTxnCount" class="text-lg font-bold text-gray-800 mt-1">0</p>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+        <h2 class="text-md font-bold text-gray-800 mb-4">Monthly Financial Trend</h2>
+        <div class="relative h-64">
+          <canvas id="monthlyTrendChart"></canvas>
+        </div>
+      </div>
+
+      <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+        <h2 class="text-md font-bold text-gray-800 mb-4">Category-Wise Spending</h2>
+        <div class="relative h-64">
+          <canvas id="categoryChart"></canvas>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    // Embedded Account Statement Data (Excludes Self Transfers)
+    const rawData = [
+      { month: '2026-05', cat: 'Bank / Interest', type: 'income', amt: 25535 },
+      { month: '2026-05', cat: 'Rent', type: 'expense', amt: 7000 },
+      { month: '2026-05', cat: 'Food & Dining', type: 'expense', amt: 3250 },
+      { month: '2026-05', cat: 'Person-to-Person Transfer', type: 'expense', amt: 2800 },
+      { month: '2026-05', cat: 'Groceries', type: 'expense', amt: 1450 },
+      { month: '2026-05', cat: 'Recharge & Bills', type: 'expense', amt: 900 },
+      { month: '2026-05', cat: 'Transport', type: 'expense', amt: 904.31 },
+
+      { month: '2026-06', cat: 'Bank / Interest', type: 'income', amt: 29716 },
+      { month: '2026-06', cat: 'Bank / Interest', type: 'income', amt: 1889.29 },
+      { month: '2026-06', cat: 'Rent', type: 'expense', amt: 7000 },
+      { month: '2026-06', cat: 'Food & Dining', type: 'expense', amt: 4120 },
+      { month: '2026-06', cat: 'Person-to-Person Transfer', type: 'expense', amt: 5300 },
+      { month: '2026-06', cat: 'Groceries', type: 'expense', amt: 1800 },
+      { month: '2026-06', cat: 'Business Payments', type: 'expense', amt: 1200 },
+      { month: '2026-06', cat: 'Recharge & Bills', type: 'expense', amt: 895.39 },
+
+      { month: '2026-07', cat: 'Bank / Interest', type: 'income', amt: 32500 },
+      { month: '2026-07', cat: 'Bank / Interest', type: 'income', amt: 212 },
+      { month: '2026-07', cat: 'Rent', type: 'expense', amt: 7000 },
+      { month: '2026-07', cat: 'Person-to-Person Transfer', type: 'expense', amt: 2100 },
+      { month: '2026-07', cat: 'Food & Dining', type: 'expense', amt: 1850 },
+      { month: '2026-07', cat: 'Medical', type: 'expense', amt: 1200 },
+      { month: '2026-07', cat: 'Transport', type: 'expense', amt: 644.15 }
+    ];
+
+    let monthlyChart, categoryChart;
+
+    function populateCategories() {
+      const categories = [...new Set(rawData.map(item => item.cat))];
+      const select = document.getElementById('categoryFilter');
+      categories.forEach(cat => {
+        const option = document.createElement('option');
+        option.value = cat;
+        option.textContent = cat;
+        select.appendChild(option);
+      });
+    }
+
+    function updateDashboard() {
+      const monthVal = document.getElementById('monthFilter').value;
+      const catVal = document.getElementById('categoryFilter').value;
+
+      const filtered = rawData.filter(item => {
+        const matchMonth = monthVal === 'All' || item.month === monthVal;
+        const matchCat = catVal === 'All' || item.cat === catVal;
+        return matchMonth && matchCat;
+      });
+
+      // Calculations
+      const totalIncome = filtered.filter(i => i.type === 'income').reduce((sum, i) => sum + i.amt, 0);
+      const totalSpending = filtered.filter(i => i.type === 'expense').reduce((sum, i) => sum + i.amt, 0);
+      const netSavings = totalIncome - totalSpending;
+      const savingsRate = totalIncome > 0 ? ((netSavings / totalIncome) * 100).toFixed(1) : 0;
+
+      // KPI Display
+      document.getElementById('kpiIncome').textContent = `₹${totalIncome.toLocaleString('en-IN')}`;
+      document.getElementById('kpiSpending').textContent = `₹${Math.round(totalSpending).toLocaleString('en-IN')}`;
+      document.getElementById('kpiSavings').textContent = `₹${Math.round(netSavings).toLocaleString('en-IN')}`;
+      document.getElementById('kpiSavingsRate').textContent = `${savingsRate}%`;
+
+      // Additional KPIs
+      const catTotals = {};
+      filtered.filter(i => i.type === 'expense').forEach(i => {
+        catTotals[i.cat] = (catTotals[i.cat] || 0) + i.amt;
+      });
+      
+      const topCat = Object.keys(catTotals).reduce((a, b) => catTotals[a] > catTotals[b] ? a : b, '-');
+      document.getElementById('kpiTopCategory').textContent = topCat !== '-' ? `${topCat} (₹${Math.round(catTotals[topCat]).toLocaleString('en-IN')})` : 'N/A';
+      
+      const dayCount = monthVal === 'All' ? 92 : 30; 
+      document.getElementById('kpiAvgDaily').textContent = `₹${Math.round(totalSpending / dayCount).toLocaleString('en-IN')}`;
+      document.getElementById('kpiTxnCount').textContent = filtered.length;
+
+      renderCharts(filtered);
+    }
+
+    function renderCharts(filteredData) {
+      const months = ['2026-05', '2026-06', '2026-07'];
+      
+      const monthlyIncome = months.map(m => 
+        filteredData.filter(i => i.month === m && i.type === 'income').reduce((s, i) => s + i.amt, 0)
+      );
+      const monthlySpending = months.map(m => 
+        filteredData.filter(i => i.month === m && i.type === 'expense').reduce((s, i) => s + i.amt, 0)
+      );
+
+      // Monthly Chart
+      if (monthlyChart) monthlyChart.destroy();
+      monthlyChart = new Chart(document.getElementById('monthlyTrendChart'), {
+        type: 'bar',
+        data: {
+          labels: ['May 2026', 'June 2026', 'July 2026'],
+          datasets: [
+            { label: 'Income', data: monthlyIncome, backgroundColor: '#22c55e' },
+            { label: 'Expenses', data: monthlySpending, backgroundColor: '#ef4444' }
+          ]
+        },
+        options: { responsive: true, maintainAspectRatio: false }
+      });
+
+      // Category Chart
+      const expenseData = filteredData.filter(i => i.type === 'expense');
+      const catTotals = {};
+      expenseData.forEach(i => catTotals[i.cat] = (catTotals[i.cat] || 0) + i.amt);
+
+      if (categoryChart) categoryChart.destroy();
+      categoryChart = new Chart(document.getElementById('categoryChart'), {
+        type: 'doughnut',
+        data: {
+          labels: Object.keys(catTotals),
+          datasets: [{
+            data: Object.values(catTotals),
+            backgroundColor: ['#3b82f6', '#f59e0b', '#8b5cf6', '#ec4899', '#10b981', '#6366f1']
+          }]
+        },
+        options: { responsive: true, maintainAspectRatio: false }
+      });
+    }
+
+    document.getElementById('monthFilter').addEventListener('change', updateDashboard);
+    document.getElementById('categoryFilter').addEventListener('change', updateDashboard);
+
+    populateCategories();
+    updateDashboard();
+  </script>
+</body>
+</html>
