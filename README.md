@@ -13,7 +13,7 @@ spending patterns and calculate a true, income-adjusted savings rate.
 - Any transactions that distort the "true" spending picture?
 - Actual savings rate (% of income saved) per month?
 - Most frequent recurring merchants?
-- Dashboard Interaction — [View Dashboard]((https://github.com/thanush912/Personal-Bank-Statement-Analysis/blob/main/index.html))
+- Dashboard Interaction — [View Dashboard](https://github.com/thanush912/Personal-Bank-Statement-Analysis/blob/main/index.html)
 
 ## Process
 - Cleaned raw data: fixed date formats, removed footer rows, verified no
